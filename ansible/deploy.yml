@@ -5,7 +5,7 @@
       shell: docker stop ci-cd-demo || true && docker rm ci-cd-demo || true
 
     - name: Pull latest image
-      shell: docker pull your-dockerhub-username/ci-cd-demo:latest
+      shell: docker pull kundlasandhyarani/ci-cd-demo:latest
 
     - name: Run container
-      shell: docker run -d --name ci-cd-demo -p 80:80 your-dockerhub-username/ci-cd-demo:latest
+      shell: docker run -d --name ci-cd-demo -p 80:81 kundlasandhyarani/ci-cd-demo:latest
