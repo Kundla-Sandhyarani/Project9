@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'my-image-name'
+        IMAGE_NAME = 'ci-cd-demo'
         DOCKER_NAMESPACE = 'kundlasandhyarani'
         DOCKER_REGISTRY = 'https://index.docker.io/v1/'
         ANSIBLE_HOST_KEY_CHECKING = 'False'
