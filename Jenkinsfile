@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/your-username/ci-cd-demo.git'
+                git 'https://github.com/Kundla-Sandhyarani/Project9.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("ci-cd-demo")
+                    dockerImage = docker.build("Project9")
                 }
             }
         }
