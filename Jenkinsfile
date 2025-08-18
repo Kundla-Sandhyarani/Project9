@@ -58,5 +58,3 @@ pipeline {
             echo '❌ Deployment pipeline failed. Please check the logs above.'
         }
     }
-}
-}
