@@ -1,0 +1,11 @@
+- hosts: webservers
+  become: true
+  tasks:
+    - name: Stop existing container
+      shell: docker stop ci-cd-demo || true && docker rm ci-cd-demo || true
+
+    - name: Pull latest image
+      shell: docker pull your-dockerhub-username/ci-cd-demo:latest
+
+    - name: Run container
+      shell: docker run -d --name ci-cd-demo -p 80:80 your-dockerhub-username/ci-cd-demo:latest
