@@ -26,8 +26,8 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds', // Replace with your Jenkins credential ID
-                    usernameVariable: 'DOCKER_USERNAME',
-                    passwordVariable: 'DOCKER_PASSWORD'
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
                 )]) {
                     script {
                         docker.withRegistry(DOCKER_REGISTRY, "${DOCKER_USERNAME}") {
