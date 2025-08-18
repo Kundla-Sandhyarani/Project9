@@ -1,37 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'my-image-name'
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+    }
+
     stages {
-        stage('Clone') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/Kundla-Sandhyarani/Project9.git', branch: 'main'
+                checkout scm
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    def customImage = docker.build('my-image-name')
+                    // Build and tag the Docker image
+                    dockerImage = docker.build("${IMAGE_NAME}")
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds', // Replace with your Jenkins credential ID
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
                     script {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
-                            dockerImage.push('latest')
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Deploy with Ansible') {
-            steps {
-                sh 'ansible-playbook deploy.yml'
-            }
-        }
-    }
-}
+                        docker.withRegistry(DOCKER_REGISTRY, "${DOCKER_USERNAME}") {
