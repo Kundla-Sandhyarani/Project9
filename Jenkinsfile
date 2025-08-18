@@ -45,7 +45,7 @@ pipeline {
                     docker.image('willhallonline/ansible:latest').inside('--user root') {
                         sh '''
                             cd ansible
-                            ansible-playbook deploy.yml
+                            ansible-playbook -i inventory.ini deploy.yml
                         '''
                     }
                 }
