@@ -46,14 +46,13 @@ pipeline {
                 )]) {
                     script {
                         docker.image('willhallonline/ansible:latest').inside("--user root -v ${KEYFILE}:/root/.ssh/id_rsa:ro") {
-                            sh '''
-                                mkdir -p ~/.ssh
-                                chmod 600 /root/.ssh/id_rsa
-                                ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
-                                cd ansible
-                                export ANSIBLE_HOST_KEY_CHECKING=False
-                                ansible-playbook -i inventory.ini deploy.yml
-                            '''
+                    sh '''
+                        mkdir -p ~/.ssh
+                        ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
+                        cd ansible
+                        export ANSIBLE_HOST_KEY_CHECKING=False
+                        ansible-playbook -i inventory.ini deploy.yml
+                    '''
                         }
                     }
                 }
