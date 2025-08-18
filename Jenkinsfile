@@ -31,3 +31,27 @@ pipeline {
                 )]) {
                     script {
                         docker.withRegistry(DOCKER_REGISTRY, "${DOCKER_USERNAME}") {
+                            dockerImage.push('latest')
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy with Ansible') {
+            steps {
+                // Replace with your actual Ansible command
+                sh 'ansible-playbook deploy.yml'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
+        }
+    }
+}
