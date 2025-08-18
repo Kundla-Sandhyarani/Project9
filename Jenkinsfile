@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git clone 'https://github.com/Kundla-Sandhyarani/Project9.git'
+                git 'https://github.com/Kundla-Sandhyarani/Project9.git'
             }
         }
 
