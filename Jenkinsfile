@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'my-image-name'
-        DOCKER_NAMESPACE = 'kundlasandhyarani' // Your Docker Hub username
+        DOCKER_NAMESPACE = 'kundlasandhyarani'
         DOCKER_REGISTRY = 'https://index.docker.io/v1/'
     }
 
@@ -17,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = docker.build("${DOCKER_NAMESPACE}/${IMAGE_NAME}")
+                    docker.build("${DOCKER_NAMESPACE}/${IMAGE_NAME}")
                 }
             }
         }
@@ -25,14 +25,13 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds', // Must match your Jenkins credential ID
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
                     script {
                         docker.withRegistry(DOCKER_REGISTRY, 'dockerhub-creds') {
-                            def dockerImage = docker.image("${DOCKER_NAMESPACE}/${IMAGE_NAME}")
-                            dockerImage.push('latest')
+                            docker.image("${DOCKER_NAMESPACE}/${IMAGE_NAME}").push('latest')
                         }
                     }
                 }
@@ -44,7 +43,10 @@ pipeline {
                 script {
                     docker.image('willhallonline/ansible:latest').inside('--user root') {
                         sh '''
+                            mkdir -p ~/.ssh
+                            ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
                             cd ansible
+                            export ANSIBLE_HOST_KEY_CHECKING=False
                             ansible-playbook -i inventory.ini deploy.yml
                         '''
                     }
