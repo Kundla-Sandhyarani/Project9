@@ -16,8 +16,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build and tag the Docker image
-                    dockerImage = docker.build("${IMAGE_NAME}")
+                    def dockerImage = docker.build("${IMAGE_NAME}")
+                    // Save image reference for later
+                    env.DOCKER_IMAGE_NAME = dockerImage.imageName()
                 }
             }
         }
@@ -25,12 +26,13 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds', // Replace with your Jenkins credential ID
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
                     script {
-                        docker.withRegistry(DOCKER_REGISTRY, "${DOCKER_USERNAME}") {
+                        docker.withRegistry(DOCKER_REGISTRY, 'dockerhub-creds') {
+                            def dockerImage = docker.image("${IMAGE_NAME}")
                             dockerImage.push('latest')
                         }
                     }
@@ -40,7 +42,6 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
-                // Replace with your actual Ansible command
                 sh 'ansible-playbook deploy.yml'
             }
         }
@@ -48,10 +49,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo '✅ Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Check logs for details.'
+            echo '❌ Pipeline failed. Check logs for details.'
         }
     }
 }
