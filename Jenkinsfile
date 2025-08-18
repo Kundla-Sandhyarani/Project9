@@ -42,7 +42,7 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 script {
-                    docker.image('willhallonline/ansible:latest').inside {
+                    docker.image('willhallonline/ansible:latest').inside('--user root') {
                         sh 'ansible-playbook deploy.yml'
                     }
                 }
