@@ -8,4 +8,5 @@
       shell: docker pull kundlasandhyarani/ci-cd-demo:latest
 
     - name: Run container
-      shell: docker run -d --name ci-cd-demo -p 8081:8080 kundlasandhyarani/ci-cd-demo:latest
+      shell: docker run -d --name ci-cd-demo -p 3000:80 kundlasandhyarani/ci-cd-demo:latest
+
