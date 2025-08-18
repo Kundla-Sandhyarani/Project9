@@ -25,7 +25,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds', // Ensure this matches your Jenkins credentials ID
+                    credentialsId: 'dockerhub-creds', // Must match your Jenkins credential ID
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
@@ -43,7 +43,10 @@ pipeline {
             steps {
                 script {
                     docker.image('willhallonline/ansible:latest').inside('--user root') {
-                        sh 'ansible-playbook /var/lib/jenkins/workspace/Project9/ansible/deploy.yml'
+                        sh '''
+                            cd ansible
+                            ansible-playbook deploy.yml
+                        '''
                     }
                 }
             }
