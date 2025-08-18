@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = 'my-image-name'
         DOCKER_NAMESPACE = 'kundlasandhyarani'
         DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
     stages {
@@ -41,18 +42,20 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ec2-ssh-key', // Replace with your actual Jenkins SSH credential ID
+                    credentialsId: 'ec2-ssh-key',
                     keyFileVariable: 'KEYFILE'
                 )]) {
                     script {
-                        docker.image('willhallonline/ansible:latest').inside("--user root -v ${KEYFILE}:/root/.ssh/id_rsa:ro") {
-                    sh '''
-                        mkdir -p ~/.ssh
-                        ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
-                        cd ansible
-                        export ANSIBLE_HOST_KEY_CHECKING=False
-                        ansible-playbook -i inventory.ini deploy.yml
-                    '''
+                        docker.image('willhallonline/ansible:latest').inside("--user root -v ${KEYFILE}:/tmp/id_rsa:ro") {
+                            sh '''
+                                mkdir -p ~/.ssh
+                                cp /tmp/id_rsa ~/.ssh/id_rsa
+                                chmod 600 ~/.ssh/id_rsa
+                                ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
+
+                                cd ansible
+                                ansible-playbook -i inventory.ini deploy.yml
+                            '''
                         }
                     }
                 }
