@@ -40,11 +40,15 @@ pipeline {
         }
 
         stage('Deploy with Ansible') {
-            steps {
+    steps {
+        script {
+            docker.image('willhallonline/ansible:latest').inside {
                 sh 'ansible-playbook deploy.yml'
             }
         }
     }
+}
+
 
     post {
         success {
