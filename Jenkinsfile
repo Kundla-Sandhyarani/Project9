@@ -11,7 +11,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("Project-9")
+                    def customImage = docker.build('my-image-name')
                 }
             }
         }
