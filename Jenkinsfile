@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     docker.image('willhallonline/ansible:latest').inside('--user root') {
-                        sh 'ansible-playbook /var/lib/jenkins/workspace/Project9/deploy.yml'
+                        sh 'ansible-playbook /var/lib/jenkins/workspace/Project9/ansible/deploy.yml'
                     }
                 }
             }
