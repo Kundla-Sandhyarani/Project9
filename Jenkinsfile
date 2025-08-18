@@ -40,15 +40,21 @@ pipeline {
 
         stage('Deploy with Ansible') {
             steps {
-                script {
-                    docker.image('willhallonline/ansible:latest').inside('--user root') {
-                        sh '''
-                            mkdir -p ~/.ssh
-                            ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
-                            cd ansible
-                            export ANSIBLE_HOST_KEY_CHECKING=False
-                            ansible-playbook -i inventory.ini deploy.yml
-                        '''
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'ec2-ssh-key', // Replace with your actual Jenkins SSH credential ID
+                    keyFileVariable: 'KEYFILE'
+                )]) {
+                    script {
+                        docker.image('willhallonline/ansible:latest').inside("--user root -v ${KEYFILE}:/root/.ssh/id_rsa:ro") {
+                            sh '''
+                                mkdir -p ~/.ssh
+                                chmod 600 /root/.ssh/id_rsa
+                                ssh-keyscan 3.106.215.254 >> ~/.ssh/known_hosts
+                                cd ansible
+                                export ANSIBLE_HOST_KEY_CHECKING=False
+                                ansible-playbook -i inventory.ini deploy.yml
+                            '''
+                        }
                     }
                 }
             }
