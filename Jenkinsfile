@@ -25,7 +25,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds', // Make sure this matches your Jenkins credentials ID
+                    credentialsId: 'dockerhub-creds', // Ensure this matches your Jenkins credentials ID
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
@@ -40,15 +40,15 @@ pipeline {
         }
 
         stage('Deploy with Ansible') {
-    steps {
-        script {
-            docker.image('willhallonline/ansible:latest').inside {
-                sh 'ansible-playbook deploy.yml'
+            steps {
+                script {
+                    docker.image('willhallonline/ansible:latest').inside {
+                        sh 'ansible-playbook deploy.yml'
+                    }
+                }
             }
         }
     }
-}
-
 
     post {
         success {
@@ -58,3 +58,4 @@ pipeline {
             echo '❌ Deployment pipeline failed. Please check the logs above.'
         }
     }
+}
