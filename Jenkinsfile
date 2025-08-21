@@ -51,7 +51,7 @@ pipeline {
                                 mkdir -p ~/.ssh
                                 cp /tmp/id_rsa ~/.ssh/id_rsa
                                 chmod 600 ~/.ssh/id_rsa
-                                ssh-keyscan 13.210.168.127 >> ~/.ssh/known_hosts
+                                ssh-keyscan 16.176.228.219 >> ~/.ssh/known_hosts
 
                                 cd ansible
                                 ansible-playbook -i inventory.ini deploy.yml
